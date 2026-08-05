@@ -1,0 +1,8 @@
+name=Realistic Book Pages
+id=RealisticBookPages_TEST
+description=Redistributes canonical skill-book tiers according to their usual game stage. Undecided and non-canonical skills retain this mod defaults. Also supports mods that extend vanilla options for books, such as Fitness, Strength and more.
+modversion=1.1.0
+versionMin=42.0
+author=FellowRoach
+poster=icon.png
+icon=icon.png
