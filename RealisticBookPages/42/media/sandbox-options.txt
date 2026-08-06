@@ -1,0 +1,493 @@
+VERSION = 1,
+
+option RealisticBookPages.Enabled
+{
+    type = boolean,
+    default = true,
+    page = RealisticBookPages_Base,
+    translation = RBP_Enabled,
+}
+
+option RealisticBookPages.MinimumPages
+{
+    type = integer,
+    min = 1,
+    max = 5000,
+    default = 16,
+    page = RealisticBookPages_Base,
+    translation = RBP_MinimumPages,
+}
+
+option RealisticBookPages.MaximumPages
+{
+    type = integer,
+    min = 1,
+    max = 5000,
+    default = 1000,
+    page = RealisticBookPages_Base,
+    translation = RBP_MaximumPages,
+}
+
+option RealisticBookPages.FallbackPages
+{
+    type = string,
+    default = 120/220/280/360/440,
+    page = RealisticBookPages_Skills,
+    translation = RBP_FallbackPages,
+}
+
+option RealisticBookPages.AdjustWeight
+{
+    type = boolean,
+    default = true,
+    page = RealisticBookPages_Skills,
+    translation = RBP_AdjustWeight,
+}
+
+option RealisticBookPages.ReferencePages
+{
+    type = integer,
+    min = 1,
+    max = 5000,
+    default = 220,
+    page = RealisticBookPages_Base,
+    translation = RBP_ReferencePages,
+}
+
+option RealisticBookPages.ReferenceWeight
+{
+    type = double,
+    min = 0.01,
+    max = 10.0,
+    default = 1.0,
+    page = RealisticBookPages_Base,
+    translation = RBP_ReferenceWeight,
+}
+
+option RealisticBookPages.BindingWeight
+{
+    type = double,
+    min = 0.0,
+    max = 10.0,
+    default = 0.25,
+    page = RealisticBookPages_Base,
+    translation = RBP_BindingWeight,
+}
+
+option RealisticBookPages.VaryOrdinaryBooks
+{
+    type = boolean,
+    default = true,
+    page = RealisticBookPages_Literature,
+    translation = RBP_VaryOrdinaryBooks,
+}
+
+option RealisticBookPages.ScaleMoodEffectsByWeight
+{
+    type = boolean,
+    default = true,
+    page = RealisticBookPages_Literature,
+    translation = RBP_ScaleMoodEffectsByWeight,
+}
+
+option RealisticBookPages.ApplyMoodEffectsWhileReading
+{
+    type = boolean,
+    default = true,
+    page = RealisticBookPages_Literature,
+    translation = RBP_ApplyMoodEffectsWhileReading,
+}
+
+option RealisticBookPages.MoodEffectStepPercent
+{
+    type = integer,
+    min = 1,
+    max = 100,
+    default = 10,
+    page = RealisticBookPages_Literature,
+    translation = RBP_MoodEffectStepPercent,
+}
+
+option RealisticBookPages.OrdinaryBookMinimumWeight
+{
+    type = double,
+    min = 0.01,
+    max = 10.0,
+    default = 0.2,
+    page = RealisticBookPages_Literature,
+    translation = RBP_OrdinaryBookMinimumWeight,
+}
+
+option RealisticBookPages.OrdinaryBookMaximumWeight
+{
+    type = double,
+    min = 0.01,
+    max = 10.0,
+    default = 2.5,
+    page = RealisticBookPages_Literature,
+    translation = RBP_OrdinaryBookMaximumWeight,
+}
+
+option RealisticBookPages.VaryMagazines
+{
+    type = boolean,
+    default = true,
+    page = RealisticBookPages_Literature,
+    translation = RBP_VaryMagazines,
+}
+
+option RealisticBookPages.MagazineMinimumWeight
+{
+    type = double,
+    min = 0.01,
+    max = 10.0,
+    default = 0.1,
+    page = RealisticBookPages_Literature,
+    translation = RBP_MagazineMinimumWeight,
+}
+
+option RealisticBookPages.MagazineMaximumWeight
+{
+    type = double,
+    min = 0.01,
+    max = 10.0,
+    default = 1.0,
+    page = RealisticBookPages_Literature,
+    translation = RBP_MagazineMaximumWeight,
+}
+
+option RealisticBookPages.VaryRecipeMagazines
+{
+    type = boolean,
+    default = true,
+    page = RealisticBookPages_Literature,
+    translation = RBP_VaryRecipeMagazines,
+}
+
+option RealisticBookPages.RecipeMagazineMinimumWeight
+{
+    type = double,
+    min = 0.01,
+    max = 10.0,
+    default = 0.1,
+    page = RealisticBookPages_Literature,
+    translation = RBP_RecipeMagazineMinimumWeight,
+}
+
+option RealisticBookPages.RecipeMagazineMaximumWeight
+{
+    type = double,
+    min = 0.01,
+    max = 10.0,
+    default = 1.0,
+    page = RealisticBookPages_Literature,
+    translation = RBP_RecipeMagazineMaximumWeight,
+}
+
+option RealisticBookPages.VaryNewspapers
+{
+    type = boolean,
+    default = true,
+    page = RealisticBookPages_Literature,
+    translation = RBP_VaryNewspapers,
+}
+
+option RealisticBookPages.NewspaperMinimumWeight
+{
+    type = double,
+    min = 0.01,
+    max = 10.0,
+    default = 0.1,
+    page = RealisticBookPages_Literature,
+    translation = RBP_NewspaperMinimumWeight,
+}
+
+option RealisticBookPages.NewspaperMaximumWeight
+{
+    type = double,
+    min = 0.01,
+    max = 10.0,
+    default = 0.8,
+    page = RealisticBookPages_Literature,
+    translation = RBP_NewspaperMaximumWeight,
+}
+
+option RealisticBookPages.CarvingPages
+{
+    type = string,
+    default = 56/104/192/304/416,
+    page = RealisticBookPages_Skills,
+    translation = RBP_CarvingPages,
+}
+
+option RealisticBookPages.FlintKnappingPages
+{
+    type = string,
+    default = 56/112/176/232/304,
+    page = RealisticBookPages_Skills,
+    translation = RBP_FlintKnappingPages,
+}
+
+option RealisticBookPages.TrappingPages
+{
+    type = string,
+    default = 72/112/176/256/372,
+    page = RealisticBookPages_Skills,
+    translation = RBP_TrappingPages,
+}
+
+option RealisticBookPages.ButcheringPages
+{
+    type = string,
+    default = 80/104/160/256/384,
+    page = RealisticBookPages_Skills,
+    translation = RBP_ButcheringPages,
+}
+
+option RealisticBookPages.FishingPages
+{
+    type = string,
+    default = 80/128/192/272/368,
+    page = RealisticBookPages_Skills,
+    translation = RBP_FishingPages,
+}
+
+option RealisticBookPages.ForagingPages
+{
+    type = string,
+    default = 88/160/248/352/480,
+    page = RealisticBookPages_Skills,
+    translation = RBP_ForagingPages,
+}
+
+option RealisticBookPages.FirstAidPages
+{
+    type = string,
+    default = 96/168/272/432/592,
+    page = RealisticBookPages_Skills,
+    translation = RBP_FirstAidPages,
+}
+
+option RealisticBookPages.MaintenancePages
+{
+    type = string,
+    default = 72/128/192/304/416,
+    page = RealisticBookPages_Skills,
+    translation = RBP_MaintenancePages,
+}
+
+option RealisticBookPages.TailoringPages
+{
+    type = string,
+    default = 80/160/256/384/544,
+    page = RealisticBookPages_Skills,
+    translation = RBP_TailoringPages,
+}
+
+option RealisticBookPages.PotteryPages
+{
+    type = string,
+    default = 88/128/208/320/448,
+    page = RealisticBookPages_Skills,
+    translation = RBP_PotteryPages,
+}
+
+option RealisticBookPages.CookingPages
+{
+    type = string,
+    default = 96/144/240/400/608,
+    page = RealisticBookPages_Skills,
+    translation = RBP_CookingPages,
+}
+
+option RealisticBookPages.TrackingPages
+{
+    type = string,
+    default = 104/144/224/336/480,
+    page = RealisticBookPages_Skills,
+    translation = RBP_TrackingPages,
+}
+
+option RealisticBookPages.MetalworkingPages
+{
+    type = string,
+    default = 112/216/304/480/656,
+    page = RealisticBookPages_Skills,
+    translation = RBP_MetalworkingPages,
+}
+
+option RealisticBookPages.MechanicsPages
+{
+    type = string,
+    default = 136/240/336/504/672,
+    page = RealisticBookPages_Skills,
+    translation = RBP_MechanicsPages,
+}
+
+option RealisticBookPages.ElectricityPages
+{
+    type = string,
+    default = 152/224/352/456/640,
+    page = RealisticBookPages_Skills,
+    translation = RBP_ElectricityPages,
+}
+
+option RealisticBookPages.FarmingPages
+{
+    type = string,
+    default = 104/184/288/448/608,
+    page = RealisticBookPages_Skills,
+    translation = RBP_FarmingPages,
+}
+
+option RealisticBookPages.GlassmakingPages
+{
+    type = string,
+    default = 96/176/288/456/640,
+    page = RealisticBookPages_Skills,
+    translation = RBP_GlassmakingPages,
+}
+
+option RealisticBookPages.HusbandryPages
+{
+    type = string,
+    default = 112/192/320/488/648,
+    page = RealisticBookPages_Skills,
+    translation = RBP_HusbandryPages,
+}
+
+option RealisticBookPages.BlacksmithingPages
+{
+    type = string,
+    default = 120/176/298/464/656,
+    page = RealisticBookPages_Skills,
+    translation = RBP_BlacksmithingPages,
+}
+
+option RealisticBookPages.CarpentryPages
+{
+    type = string,
+    default = 96/176/288/448/608,
+    page = RealisticBookPages_Skills,
+    translation = RBP_CarpentryPages,
+}
+
+option RealisticBookPages.MasonryPages
+{
+    type = string,
+    default = 80/160/256/400/576,
+    page = RealisticBookPages_Skills,
+    translation = RBP_MasonryPages,
+}
+
+option RealisticBookPages.SpearPages
+{
+    type = string,
+    default = 64/88/144/208/288,
+    page = RealisticBookPages_Skills,
+    translation = RBP_SpearPages,
+}
+
+option RealisticBookPages.ShortBluntPages
+{
+    type = string,
+    default = 64/80/112/160/208,
+    page = RealisticBookPages_Skills,
+    translation = RBP_ShortBluntPages,
+}
+
+option RealisticBookPages.LongBluntPages
+{
+    type = string,
+    default = 72/96/128/176/256,
+    page = RealisticBookPages_Skills,
+    translation = RBP_LongBluntPages,
+}
+
+option RealisticBookPages.AxePages
+{
+    type = string,
+    default = 72/104/128/176/256,
+    page = RealisticBookPages_Skills,
+    translation = RBP_AxePages,
+}
+
+option RealisticBookPages.ShortBladePages
+{
+    type = string,
+    default = 80/104/144/208/304,
+    page = RealisticBookPages_Skills,
+    translation = RBP_ShortBladePages,
+}
+
+option RealisticBookPages.AimingPages
+{
+    type = string,
+    default = 80/120/176/248/352,
+    page = RealisticBookPages_Skills,
+    translation = RBP_AimingPages,
+}
+
+option RealisticBookPages.ReloadingPages
+{
+    type = string,
+    default = 64/96/128/176/256,
+    page = RealisticBookPages_Skills,
+    translation = RBP_ReloadingPages,
+}
+
+option RealisticBookPages.LongBladePages
+{
+    type = string,
+    default = 96/136/192/304/416,
+    page = RealisticBookPages_Skills,
+    translation = RBP_LongBladePages,
+}
+
+option RealisticBookPages.StrengthPages
+{
+    type = string,
+    default = 96/128/168/272/416,
+    page = RealisticBookPages_Skills,
+    translation = RBP_StrengthPages,
+}
+
+option RealisticBookPages.FitnessPages
+{
+    type = string,
+    default = 104/136/184/304/464,
+    page = RealisticBookPages_Skills,
+    translation = RBP_FitnessPages,
+}
+
+option RealisticBookPages.RunningPages
+{
+    type = string,
+    default = 72/112/176/248/352,
+    page = RealisticBookPages_Skills,
+    translation = RBP_RunningPages,
+}
+
+option RealisticBookPages.NimblePages
+{
+    type = string,
+    default = 80/136/184/280/416,
+    page = RealisticBookPages_Skills,
+    translation = RBP_NimblePages,
+}
+
+option RealisticBookPages.LightfootedPages
+{
+    type = string,
+    default = 88/112/152/192/272,
+    page = RealisticBookPages_Skills,
+    translation = RBP_LightfootedPages,
+}
+
+option RealisticBookPages.SneakingPages
+{
+    type = string,
+    default = 96/120/176/256/352,
+    page = RealisticBookPages_Skills,
+    translation = RBP_SneakingPages,
+}

@@ -1,4 +1,4 @@
-# Realistic Book Pages
+# Realistic Book Pages [B42]
 
 Skill books should feel like real books, not five copies of the same book with increasingly large page counts.
 
@@ -13,10 +13,37 @@ The result is a progression in which surviving, reading, and learning fit togeth
 - Larger advanced technical and professional references.
 - Short, focused combat manuals based on comparable real-world books.
 - Dynamic book weight based on page count.
+- Server-wide Sandbox controls for every canonical skill and tier.
+- Fixed page values and per-spawn page ranges.
 - Automatic support for expansion mods that create skill books through the standard game API.
 - A fallback balance for correctly implemented books that train non-canonical skills.
-- Recipe magazines and unrelated literature remain unchanged.
-- Build 42 compatible.
+- Weight-first page variation for ordinary books, magazines, recipe magazines, and newspapers.
+- Uncapped weight-scaled boredom, stress, and unhappiness effects, applied as pages are read.
+
+## Sandbox and multiplayer configuration
+
+The bundled values remain the defaults. Hosts and dedicated-server admins can change them through three Sandbox pages: **Base Configuration**, **Skill Books**, and **Other Literature**.
+
+Each skill uses one field containing five values in this order:
+
+`Beginner / Intermediate / Advanced / Expert / Master`
+
+For example:
+
+`56 / 104 / 192 / 304 / 416`
+
+Each tier accepts either a fixed page count or a range:
+
+- `120` sets the book to exactly 120 pages.
+- `>80<240` gives every newly spawned book an inclusive random value from 80 through 240.
+- `>80` uses 80 as the minimum and the global maximum as the upper bound.
+- `<240` uses the global minimum as the lower bound and 240 as the maximum.
+
+Range results are rolled when each book instance spawns. In multiplayer, only the server rolls the value; clients retain the synchronized value assigned to that instance. Two copies of the same skill book can therefore have different lengths without creating client/server disagreement. All fixed and ranged results are clamped to the global **Minimum Pages** and **Maximum Pages** options.
+
+The General section also controls the fallback curve for non-canonical skills and the dynamic-weight formula. Sandbox settings are world-wide and apply to all players. Changes made through a live admin Sandbox interface affect books spawned after the updated values reach the server; books that already exist are not rerolled.
+
+Dedicated servers can edit the generated `RealisticBookPages` section in their `<servername>_SandboxVars.lua` file or use the host Sandbox UI. Editing this file on disk still requires the server to reload it. Existing books already serialized into a save retain their assigned page count and weight; newly generated books use the current configuration.
 
 ## Page balance
 
@@ -39,7 +66,7 @@ Each book covers two skill levels: Beginner covers levels 1â€“2, Intermediate 3â
 | Metalworking | 112 | 216 | 304 | 480 | 656 | **1,768** |
 | Mechanics | 136 | 240 | 336 | 504 | 672 | **1,888** |
 | Electricity | 152 | 224 | 352 | 456 | 640 | **1,824** |
-| Farming | 80 | 184 | 288 | 448 | 608 | **1,608** |
+| Farming | 104 | 184 | 288 | 448 | 608 | **1,608** |
 | Glassmaking | 96 | 176 | 288 | 456 | 640 | **1,656** |
 | Husbandry | 112 | 192 | 320 | 488 | 648 | **1,760** |
 | Blacksmithing | 120 | 176 | 298 | 464 | 656 | **1,714** |
@@ -121,6 +148,12 @@ A 220-page book remains the reference weight of 1.0. A fixed portion represents 
 | 608 pages | 2.32 |
 | 672 pages | 2.54 |
 
+### Other literature and mood effects
+
+Ordinary books, miscellaneous magazines weighing 0.5 by default, recipe magazines, and newspapers receive a spawned weight and proportional page count. Their original weight remains the baseline for mood effects: a hardcover reduced from 1.0 to 0.5 weight provides half its original benefit, while a paperback whose original weight is already 0.5 retains its full benefit. The multiplier is uncapped, so larger variants provide proportionally larger total effects.
+
+Boredom, stress, and unhappiness changes are granted for newly read pages instead of all at completion. Interrupted books resume from their saved page without rewarding the same pages again. Both weight scaling and gradual effects can be disabled under **Other Literature**.
+
 ## Expansion-mod compatibility
 
 The mod discovers loaded skill books through Project Zomboid's item API instead of maintaining a hard-coded list of item IDs. Expansion mods are supported automatically when their books follow the standard game structure:
@@ -135,14 +168,28 @@ Books for properly implemented non-canonical skills receive the fallback progres
 
 Mods that use nonstandard tier structures or do not expose their skill books through the expected game properties cannot be balanced reliably and are left outside the automatic compatibility scope.
 
+### Pre-initialization API
+
+Expansion mods can register a five-tier curve before world initialization:
+
+```lua
+RealisticBookPages.registerSkill(
+    "MyCustomSkill",
+    { 80, ">100<180", 240, 360, 480 },
+    { "MyCustomSkillAlias" }
+)
+```
+
+Server-side code can override a complete curve with `setPageCurve`, one tier with `setPageSpec`, or the non-canonical fallback with `setFallbackCurve`. Lua callers may pass real numbers or range strings. Call `RealisticBookPages.apply()` if an override is registered after initialization; registering before `OnInitWorld` is preferred.
+
 ## What the mod changes
 
-Only two properties are changed on qualifying skill books:
+Qualifying skill books can change:
 
 - `NumberOfPages`
 - `Weight`
 
-The mod does not replace complete vanilla item definitions. Recipe magazines, ordinary books, newspapers, journals, and other literature are not modified.
+Qualifying ordinary books, magazines, recipe magazines, and newspapers also receive instance-specific pages and weight. Their boredom, stress, and unhappiness values scale from original weight and can be consumed progressively while reading. The mod does not replace complete vanilla item definitions.
 
 ## Installation
 

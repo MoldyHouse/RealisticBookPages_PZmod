@@ -5,9 +5,6 @@ Skill books should feel like real books, not five copies of the same book with i
 
 [b]Realistic Book Pages[/b] rebalances the length and weight of every canonical Project Zomboid skill book. Basic books are shorter, lighter, and faster to read, helping them serve as useful early-game accelerators. Advanced books take longer because they represent deeper, more specialized material and provide access to stronger XP multipliers.
 
-The result is a progression in which surviving, reading, and learning fit together more naturally.
-
-
 [b]Features[/b]
 
 [list]
@@ -16,14 +13,16 @@ The result is a progression in which surviving, reading, and learning fit togeth
 [*]Larger advanced technical and professional references.
 [*]Short, focused combat manuals based on comparable real-world books.
 [*]Dynamic book weight based on page count.
+[*]Server-wide Sandbox controls for every canonical skill and tier.
+[*]Fixed page values and per-spawn page ranges.
 [*]Automatic support for expansion mods that create skill books through the standard game API.
 [*]A fallback balance for correctly implemented books that train non-canonical skills.
-[*]Recipe magazines and unrelated literature remain unchanged.
-[*]Build 42 compatible.[/list]
+[*]Weight and page variation for ordinary books, magazines, recipe magazines, and newspapers.
+[*]Weight-scaled mood effects granted progressively while reading.
+[*]READ MORE [b][url=https://github.com/MoldyHouse/RealisticBookPages_PZmod]HERE[/url][/b]
+[/list]
 
 [b]Page balance[/b]
-
-Each book covers two skill levels: Beginner covers levels 1–2, Intermediate 3–4, Advanced 5–6, Expert 7–8, and Master 9–10.
 
 [table=98%][tr][td][b]Skill[/b][/td][td][b]Beginner[/b][/td][td][b]Intermediate[/b][/td][td][b]Advanced[/b][/td][td][b]Expert[/b][/td][td][b]Master[/b][/td][td][b]Total[/b][/td][/tr]
 [tr][td]Carving[/td][td]56[/td][td]104[/td][td]192[/td][td]304[/td][td]416[/td][td][b]1,072[/b][/td][/tr]
@@ -32,51 +31,32 @@ Each book covers two skill levels: Beginner covers levels 1–2, Intermediate 3�
 [tr][td]Butchering[/td][td]80[/td][td]104[/td][td]160[/td][td]256[/td][td]384[/td][td][b]984[/b][/td][/tr]
 [tr][td]Fishing[/td][td]80[/td][td]128[/td][td]192[/td][td]272[/td][td]368[/td][td][b]1,040[/b][/td][/tr]
 [tr][td]Foraging[/td][td]88[/td][td]160[/td][td]248[/td][td]352[/td][td]480[/td][td][b]1,328[/b][/td][/tr]
-[tr][td]First Aid[/td][td]96[/td][td]168[/td][td]272[/td][td]432[/td][td]592[/td][td][b]1,560[/b][/td][/tr]
-[tr][td]Maintenance[/td][td]72[/td][td]128[/td][td]192[/td][td]304[/td][td]416[/td][td][b]1,112[/b][/td][/tr]
-[tr][td]Tailoring[/td][td]80[/td][td]160[/td][td]256[/td][td]384[/td][td]544[/td][td][b]1,424[/b][/td][/tr]
-[tr][td]Pottery[/td][td]88[/td][td]128[/td][td]208[/td][td]320[/td][td]448[/td][td][b]1,192[/b][/td][/tr]
-[tr][td]Cooking[/td][td]96[/td][td]144[/td][td]240[/td][td]400[/td][td]608[/td][td][b]1,488[/b][/td][/tr]
-[tr][td]Tracking[/td][td]104[/td][td]144[/td][td]224[/td][td]336[/td][td]480[/td][td][b]1,288[/b][/td][/tr]
-[tr][td]Metalworking[/td][td]112[/td][td]216[/td][td]304[/td][td]480[/td][td]656[/td][td][b]1,768[/b][/td][/tr]
-[tr][td]Mechanics[/td][td]136[/td][td]240[/td][td]336[/td][td]504[/td][td]672[/td][td][b]1,888[/b][/td][/tr]
-[tr][td]Electricity[/td][td]152[/td][td]224[/td][td]352[/td][td]456[/td][td]640[/td][td][b]1,824[/b][/td][/tr]
-[tr][td]Farming[/td][td]80[/td][td]184[/td][td]288[/td][td]448[/td][td]608[/td][td][b]1,608[/b][/td][/tr]
-[tr][td]Glassmaking[/td][td]96[/td][td]176[/td][td]288[/td][td]456[/td][td]640[/td][td][b]1,656[/b][/td][/tr]
-[tr][td]Husbandry[/td][td]112[/td][td]192[/td][td]320[/td][td]488[/td][td]648[/td][td][b]1,760[/b][/td][/tr]
-[tr][td]Blacksmithing[/td][td]120[/td][td]176[/td][td]298[/td][td]464[/td][td]656[/td][td][b]1,714[/b][/td][/tr]
-[tr][td]Carpentry[/td][td]96[/td][td]176[/td][td]288[/td][td]448[/td][td]608[/td][td][b]1,616[/b][/td][/tr]
-[tr][td]Masonry[/td][td]80[/td][td]160[/td][td]256[/td][td]400[/td][td]576[/td][td][b]1,472[/b][/td][/tr]
-[tr][td]Aiming[/td][td]80[/td][td]120[/td][td]176[/td][td]248[/td][td]352[/td][td][b]976[/b][/td][/tr]
-[tr][td]Reloading[/td][td]64[/td][td]96[/td][td]128[/td][td]176[/td][td]256[/td][td][b]720[/b][/td][/tr]
-[tr][td]Long Blade[/td][td]96[/td][td]136[/td][td]192[/td][td]304[/td][td]416[/td][td][b]1,144[/b][/td][/tr]
+[tr][td]...[/td][td]...[/td][td]...[/td][td]...[/td][td]...[/td][td]...[/td][td][b]...[/b][/td][/tr]
 [tr][td]Comparison[/td][td]-[/td][td]-[/td][td]-[/td][td]-[/td][td]-[/td][td]-[/td][/tr]
 [tr][td]Default Game Values[/td][td]220[/td][td]260[/td][td]300[/td][td]340[/td][td]380[/td][td][b]35040[/b][/td][/tr]
-[tr][td]Default Game Values[/td][td]>56<120[/td][td]>80<240[/td][td]>128<352[/td][td]>176<504[/td][td]>256<672[/td][td][b]32502[/b][/td][/tr]
+[tr][td]Realistic Book Values[/td][td]>56<120[/td][td]>80<240[/td][td]>128<352[/td][td]>176<504[/td][td]>256<672[/td][td][b]32502[/b][/td][/tr]
 [/table]
 
-[b]Extended for Skill Book Mods[/b]
+For full balance table, read it in: [b][url=https://github.com/MoldyHouse/RealisticBookPages_PZmod#page-balance]Balance Table at Github[/url][/b]
 
-[table=98%][tr][td][b]Skill[/b][/td][td][b]Beginner[/b][/td][td][b]Intermediate[/b][/td][td][b]Advanced[/b][/td][td][b]Expert[/b][/td][td][b]Master[/b][/td][td][b]Total[/b][/td][/tr]
-[tr][td]Spear[/td][td]64[/td][td]88[/td][td]144[/td][td]208[/td][td]288[/td][td][b]792[/b][/td][/tr]
-[tr][td]Short Blunt[/td][td]64[/td][td]80[/td][td]112[/td][td]160[/td][td]208[/td][td][b]624[/b][/td][/tr]
-[tr][td]Long Blunt[/td][td]72[/td][td]96[/td][td]128[/td][td]176[/td][td]256[/td][td][b]728[/b][/td][/tr]
-[tr][td]Axe[/td][td]72[/td][td]104[/td][td]128[/td][td]176[/td][td]256[/td][td][b]736[/b][/td][/tr]
-[tr][td]Short Blade[/td][td]80[/td][td]104[/td][td]144[/td][td]208[/td][td]304[/td][td][b]840[/b][/td][/tr]
-[tr][td]Strength[/td][td]96[/td][td]128[/td][td]168[/td][td]272[/td][td]416[/td][td][b]1,080[/b][/td][/tr]
-[tr][td]Fitness[/td][td]104[/td][td]136[/td][td]184[/td][td]304[/td][td]464[/td][td][b]1,192[/b][/td][/tr]
-[tr][td]Running[/td][td]72[/td][td]112[/td][td]176[/td][td]248[/td][td]352[/td][td][b]960[/b][/td][/tr]
-[tr][td]Nimble[/td][td]80[/td][td]136[/td][td]184[/td][td]280[/td][td]416[/td][td][b]1,096[/b][/td][/tr]
-[tr][td]Lightfooted[/td][td]88[/td][td]112[/td][td]152[/td][td]192[/td][td]272[/td][td][b]816[/b][/td][/tr]
-[tr][td]Sneaking[/td][td]96[/td][td]120[/td][td]176[/td][td]256[/td][td]352[/td][td][b]1,000[/b][/td][/tr]
-[tr][td]Total[/td][td][/td][td][/td][td][/td][td][/td][td][/td][td][b]9864[/b][/td][/tr]
-[/table]
+[b]Sandbox and multiplayer configuration[/b]
 
-[b]Balance philosophy[/b]
+Each skill uses one field containing five values in this order:
+
+[code]Beginner / Intermediate / Advanced / Expert / Master[/code]
+
+For example:
+
+[code]56 / 104 / 192 / 304 / 416[/code]
+
+Each tier accepts either a fixed page count or a range:
+
+- [code]120[/code] sets the book to exactly 120 pages.
+- [code]>80<240[/code] gives every newly spawned book an inclusive random value from 80 through 240.
+- [code]>80[/code] uses 80 as the minimum and the global maximum as the upper bound.
+- [code]<240[/code] uses the global minimum as the lower bound and 240 as the maximum.
 
 [b]Skill books are not linear[/b]
-
-Higher-tier books cover increasingly complex material and unlock stronger XP multipliers. Their reading time therefore grows with the depth and usefulness of the knowledge they contain. The tiers are deliberately not distributed through a single linear formula, and different skills do not share an artificial total-page target.
 
 The balance was created by hand using three main references:
 
@@ -93,20 +73,24 @@ The balance was created by hand using three main references:
 [tr][td]80 pages[/td][td]0.52[/td][/tr]
 [tr][td]220 pages[/td][td]1.00[/td][/tr]
 [tr][td]352 pages[/td][td]1.45[/td][/tr]
-[tr][td]608 pages[/td][td]2.32[/td][/tr]
 [/table]
 
-[b]Expansion-mod compatibility[/b]
+Other literature receives proportional pages and weight. Its boredom, stress, and unhappiness effects scale without a cap from spawned weight ÷ original weight, then apply as pages are read. A 0.5-weight hardcover gives half its original benefit; a paperback originally weighing 0.5 keeps its full benefit. Both behaviors have Sandbox controls.
 
-The mod discovers loaded skill books through Project Zomboid’s item API instead of maintaining a hard-coded list of item IDs. Expansion mods are supported automatically when their books follow the standard game structure:
+[b]Pre-initialization API[/b]
 
-Books for properly implemented non-canonical skills receive the fallback progression of [b]120 / 220 / 280 / 360 / 440 pages[/b]. Their weight is calculated from those page counts in the same way as canonical books.
+Expansion mods can register a five-tier curve before world initialization:
 
-[b]What the mod changes[/b]
+[code=lua]
+RealisticBookPages.registerSkill(
+    "MyCustomSkill",
+    { 80, ">100<180", 240, 360, 480 },
+    { "MyCustomSkillAlias" }
+)
+[/code]
 
-Only two properties are changed on qualifying skill books:
+Server-side code can override a complete curve with `setPageCurve`, one tier with `setPageSpec`, or the non-canonical fallback with `setFallbackCurve`. Lua callers may pass real numbers or range strings. Call `RealisticBookPages.apply()` if an override is registered after initialization; registering before `OnInitWorld` is preferred.
 
-[list]
-[*][code]NumberOfPages[/code]
-[*][code]Weight[/code][/list]
-The mod does not replace complete vanilla item definitions. Recipe magazines, ordinary books, newspapers, journals, and other literature are not modified.
+Github: https://github.com/MoldyHouse/RealisticBookPages_PZmod
+Workshop ID: 3777767140
+Mod ID: RealisticBookPages
