@@ -2,7 +2,6 @@ require("TimedActions/ISReadABook")
 
 local Config = require("RealisticBookPages/Config")
 local API = require("RealisticBookPages/Applicator")
-local Progress = require("RealisticBookPages/Progress")
 
 local ReadingEffects = {}
 local COMMAND_MODULE = "RealisticBookPages"
@@ -210,56 +209,31 @@ function ISReadABook:start()
 end
 
 
-local originalGetDuration = ISReadABook.getDuration
-function ISReadABook:getDuration()
-    API.prepareLiteratureMoodEffects(self.item)
-    return Progress.withItemProgress(self.character, self.item, function()
-        return originalGetDuration(self)
-    end)
-end
-
-
 local originalUpdate = ISReadABook.update
 function ISReadABook:update()
     originalUpdate(self)
-    Progress.clearShared(self.character, self.item)
     applyThroughPage(self, currentPageForAction(self), false)
 end
 
 local originalAnimEvent = ISReadABook.animEvent
 function ISReadABook:animEvent(event, parameter)
     originalAnimEvent(self, event, parameter)
-    Progress.clearShared(self.character, self.item)
 
     if event == "ReadAPage" then
         applyThroughPage(self, currentPageForAction(self), false)
     end
 end
 
-
-local originalStop = ISReadABook.stop
-function ISReadABook:stop()
-    local result = originalStop(self)
-    Progress.clearShared(self.character, self.item)
-    return result
-end
-
 local originalComplete = ISReadABook.complete
-local function completeAndClearShared(action)
-    local result = originalComplete(action)
-    Progress.clearShared(action.character, action.item)
-    return result
-end
-
 function ISReadABook:complete()
     local enabled, data = isGradualAction(self)
     if not enabled then
-        return completeAndClearShared(self)
+        return originalComplete(self)
     end
 
     if isReadDuringCooldown(self, data) then
         self.isLiteratureRead = true
-        return completeAndClearShared(self)
+        return originalComplete(self)
     end
 
     applyThroughPage(self, self.item:getNumberOfPages(), true)
@@ -277,7 +251,7 @@ function ISReadABook:complete()
     end
 
     self.isLiteratureRead = true
-    return completeAndClearShared(self)
+    return originalComplete(self)
 end
 
 local function onServerCommand(module, command, args)

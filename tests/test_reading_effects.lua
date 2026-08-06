@@ -127,25 +127,16 @@ function character:setAlreadyReadPages(fullType, pages)
     self.sharedProgress[fullType] = pages
 end
 
-local sharedType = "Test.GeneratedLiterature"
-local firstCopy = newLiterature({
-    fullType = sharedType,
-    pageCount = 165,
-    pagesRead = 65,
+local literature = newLiterature({
+    fullType = "Test.Literature",
+    pageCount = 100,
     id = 1,
-    title = "Generated_Title_A",
-})
-local secondCopy = newLiterature({
-    fullType = sharedType,
-    pageCount = 29,
-    id = 2,
-    title = "Generated_Title_B",
+    title = "Test_Title",
 })
 
 local ReadingEffects = require("RealisticBookPages/ReadingEffects")
-local Progress = require("RealisticBookPages/Progress")
 local action = {
-    item = firstCopy,
+    item = literature,
     character = character,
     startPage = 0,
     rbpLastMoodPercent = 0,
@@ -154,57 +145,13 @@ local action = {
 }
 
 ReadingEffects.applyThroughPage(action, 25)
-near(values.boredom, 75, "only completed 10% milestones must apply")
-near(values.stress, 0.76, "stress must use completed milestones")
-near(values.unhappiness, 76, "unhappiness must use completed milestones")
+near(values.boredom, 70, "only completed 10% milestones must apply")
+near(values.stress, 0.72, "stress must use completed milestones")
+near(values.unhappiness, 72, "unhappiness must use completed milestones")
 
 ReadingEffects.applyThroughPage(action, 25)
-near(values.boredom, 75, "the same milestone must not apply twice")
-near(values.stress, 0.76, "stress must not apply twice")
-near(values.unhappiness, 76, "unhappiness must not apply twice")
-
-action.simulatedUpdatePage = 66
-ISReadABook.update(action)
-near(firstCopy:getAlreadyReadPages(), 66, "reading must advance only the active item")
-near(
-    character:getAlreadyReadPages(sharedType),
-    0,
-    "reading updates must not leave shared progress behind"
-)
-near(secondCopy:getAlreadyReadPages(), 0, "an inactive copy must remain unread")
-action.simulatedUpdatePage = nil
-
--- Reproduce vanilla's unsafe shared-type value, then start another physical
--- copy of the same type. Its own page field must remain authoritative.
-character:setAlreadyReadPages(sharedType, firstCopy:getAlreadyReadPages())
-action.item = secondCopy
-ISReadABook.getDuration(action)
-near(secondCopy:getAlreadyReadPages(), 0, "a new physical copy must start unread")
-near(action.startPage, 0, "duration must use the selected copy's progress")
-near(
-    character:getAlreadyReadPages(sharedType),
-    0,
-    "shared vanilla progress must be cleared after the compatibility call"
-)
-near(firstCopy:getAlreadyReadPages(), 66, "another copy must remain unchanged")
-
--- Tooltip and duration adapters expose only the selected item during the
--- vanilla call, and never persist that shared value afterward.
-local observedProgress
-Progress.withItemProgress(character, firstCopy, function()
-    observedProgress = character:getAlreadyReadPages(sharedType)
-end)
-near(observedProgress, 66, "the adapter must expose the selected copy")
-near(character:getAlreadyReadPages(sharedType), 0, "adapter state must be cleared")
-near(secondCopy:getAlreadyReadPages(), 0, "inspecting one copy must not alter another")
-
--- Once the game's literature-title cooldown expires, each physical item's
--- progress is reset once for that completion record.
-secondCopy:setAlreadyReadPages(secondCopy:getNumberOfPages())
-readLiterature.values[secondCopy.data.literatureTitle] = 10
-character.activeCooldowns[secondCopy.data.literatureTitle] = false
-assert(Progress.resetAfterCooldown(character, secondCopy))
-near(secondCopy:getAlreadyReadPages(), 0, "expired literature must become rereadable")
-assert(not Progress.resetAfterCooldown(character, secondCopy))
+near(values.boredom, 70, "the same milestone must not apply twice")
+near(values.stress, 0.72, "stress must not apply twice")
+near(values.unhappiness, 72, "unhappiness must not apply twice")
 
 print("Realistic Book Pages reading-effects tests passed")

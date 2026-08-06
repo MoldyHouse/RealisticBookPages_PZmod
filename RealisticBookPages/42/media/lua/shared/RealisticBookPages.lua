@@ -3,10 +3,6 @@
 local API = require("RealisticBookPages/Applicator")
 require("RealisticBookPages/ReadingEffects")
 
-if not (isServer and isServer()) then
-    require("RealisticBookPages/UI")
-end
-
 local function applyOnWorldInit()
     API.applyPageCounts("OnInitWorld")
 end
