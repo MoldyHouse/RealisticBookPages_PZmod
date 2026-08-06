@@ -154,4 +154,35 @@ near(values.boredom, 70, "the same milestone must not apply twice")
 near(values.stress, 0.72, "stress must not apply twice")
 near(values.unhappiness, 72, "unhappiness must not apply twice")
 
+local sharedType = "Test.SharedLiterature"
+local longerCopy = newLiterature({
+    fullType = sharedType,
+    pageCount = 160,
+    pagesRead = 80,
+    id = 2,
+    title = "Test_Title_A",
+})
+local shorterCopy = newLiterature({
+    fullType = sharedType,
+    pageCount = 30,
+    id = 3,
+    title = "Test_Title_B",
+})
+
+-- Vanilla stores the active value by shared type. Starting another physical
+-- copy must use that item's own progress instead of inheriting this value.
+character:setAlreadyReadPages(sharedType, longerCopy:getAlreadyReadPages())
+action.item = shorterCopy
+ISReadABook.getDuration(action)
+near(shorterCopy:getAlreadyReadPages(), 0, "a different copy must start unread")
+near(action.startPage, 0, "duration must use the physical item's progress")
+near(character:getAlreadyReadPages(sharedType), 0, "shared progress must be cleared")
+near(longerCopy:getAlreadyReadPages(), 80, "the first copy must remain unchanged")
+
+action.simulatedUpdatePage = 10
+ISReadABook.update(action)
+near(shorterCopy:getAlreadyReadPages(), 10, "reading must advance the active item")
+near(character:getAlreadyReadPages(sharedType), 0, "updates must clear shared progress")
+near(longerCopy:getAlreadyReadPages(), 80, "reading must not advance another copy")
+
 print("Realistic Book Pages reading-effects tests passed")

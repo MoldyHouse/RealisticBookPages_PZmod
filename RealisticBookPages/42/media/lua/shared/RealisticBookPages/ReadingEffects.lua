@@ -29,6 +29,65 @@ local function hasSkillBook(item)
     return skill and skill ~= "" and SkillBook[skill] ~= nil
 end
 
+local function usesItemProgress(item)
+    return item
+        and not hasSkillBook(item)
+        and item:getNumberOfPages() > 0
+        and getMoodData(item) ~= nil
+end
+
+local function clearSharedProgress(character, item)
+    if character and usesItemProgress(item) then
+        character:setAlreadyReadPages(item:getFullType(), 0)
+    end
+end
+
+local function resetProgressAfterCooldown(character, item)
+    if not usesItemProgress(item) then
+        return
+    end
+
+    local data = item:getModData()
+    local title = data.literatureTitle
+    if not title or title == "" or character:isLiteratureRead(title) then
+        return
+    end
+
+    local readLiterature = character:getReadLiterature()
+    if not readLiterature or not readLiterature:containsKey(title) then
+        return
+    end
+
+    local completedDay = tostring(readLiterature:get(title))
+    if data.RBP_ProgressResetDay ~= completedDay then
+        item:setAlreadyReadPages(0)
+        data.RBP_ProgressResetDay = completedDay
+    end
+end
+
+-- Vanilla calculates reading duration from character progress keyed by the
+-- shared item type. Temporarily supply this physical item's own progress, then
+-- clear the shared value so another copy cannot inherit it.
+local function withItemProgress(action, callback)
+    if not usesItemProgress(action.item) then
+        return callback()
+    end
+
+    resetProgressAfterCooldown(action.character, action.item)
+    local pages = math.max(0, math.min(
+        action.item:getNumberOfPages(),
+        action.item:getAlreadyReadPages()
+    ))
+    action.character:setAlreadyReadPages(action.item:getFullType(), pages)
+
+    local ok, result = pcall(callback)
+    clearSharedProgress(action.character, action.item)
+    if not ok then
+        error(result)
+    end
+    return result
+end
+
 local function isReadDuringCooldown(action, data)
     if action.rbpMoodAlreadyRead ~= nil then
         return action.rbpMoodAlreadyRead
@@ -209,31 +268,56 @@ function ISReadABook:start()
 end
 
 
+local originalGetDuration = ISReadABook.getDuration
+function ISReadABook:getDuration()
+    API.prepareLiteratureMoodEffects(self.item)
+    return withItemProgress(self, function()
+        return originalGetDuration(self)
+    end)
+end
+
+
 local originalUpdate = ISReadABook.update
 function ISReadABook:update()
     originalUpdate(self)
+    clearSharedProgress(self.character, self.item)
     applyThroughPage(self, currentPageForAction(self), false)
 end
 
 local originalAnimEvent = ISReadABook.animEvent
 function ISReadABook:animEvent(event, parameter)
     originalAnimEvent(self, event, parameter)
+    clearSharedProgress(self.character, self.item)
 
     if event == "ReadAPage" then
         applyThroughPage(self, currentPageForAction(self), false)
     end
 end
 
+
+local originalStop = ISReadABook.stop
+function ISReadABook:stop()
+    local result = originalStop(self)
+    clearSharedProgress(self.character, self.item)
+    return result
+end
+
 local originalComplete = ISReadABook.complete
+local function completeAndClearShared(action)
+    local result = originalComplete(action)
+    clearSharedProgress(action.character, action.item)
+    return result
+end
+
 function ISReadABook:complete()
     local enabled, data = isGradualAction(self)
     if not enabled then
-        return originalComplete(self)
+        return completeAndClearShared(self)
     end
 
     if isReadDuringCooldown(self, data) then
         self.isLiteratureRead = true
-        return originalComplete(self)
+        return completeAndClearShared(self)
     end
 
     applyThroughPage(self, self.item:getNumberOfPages(), true)
@@ -251,7 +335,7 @@ function ISReadABook:complete()
     end
 
     self.isLiteratureRead = true
-    return originalComplete(self)
+    return completeAndClearShared(self)
 end
 
 local function onServerCommand(module, command, args)

@@ -218,18 +218,16 @@ local function callOriginalOnCreate(fullType, item)
     end
 end
 
-local function readBookMetadata(item)
-    local ok, skill, startingLevel, levelsTrained = pcall(function()
-        return item:getSkillTrained(),
-            item:getLevelSkillTrained(),
-            item:getNumLevelsTrained()
-    end)
+local function readScriptBookMetadata(item)
+    return item:getSkillTrained(),
+        item:getLevelSkillTrained(),
+        item:getNumLevelsTrained()
+end
 
-    if not ok then
-        return nil
-    end
-
-    return skill, startingLevel, levelsTrained
+local function readRuntimeBookMetadata(item)
+    return item:getSkillTrained(),
+        item:getLvlSkillTrained(),
+        item:getNumLevelsTrained()
 end
 
 local function getBaseline(item)
@@ -396,7 +394,7 @@ function API.prepareLiteratureMoodEffects(item)
         return true
     end
 
-    local skill, startingLevel, levelsTrained = readBookMetadata(item)
+    local skill, startingLevel, levelsTrained = readRuntimeBookMetadata(item)
     if skill and skill ~= ""
         and Defaults.tierByStartingLevel[startingLevel]
         and levelsTrained == 2 then
@@ -515,7 +513,8 @@ function API.applyPageCounts(reason)
 
     for index = 0, items:size() - 1 do
         local item = items:get(index)
-        local skill, startingLevel, levelsTrained = readBookMetadata(item)
+        local skill, startingLevel, levelsTrained =
+            readScriptBookMetadata(item)
         local tier = Defaults.tierByStartingLevel[startingLevel]
 
         -- Skill books remain page-first; other literature is weight-first.
