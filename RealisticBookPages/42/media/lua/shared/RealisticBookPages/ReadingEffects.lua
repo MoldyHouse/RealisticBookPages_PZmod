@@ -196,17 +196,17 @@ local function currentPageForAction(action)
     local totalPages = action.item:getNumberOfPages()
     local page = action.item:getAlreadyReadPages()
 
-    local jobDelta = action:getJobDelta()
-    if jobDelta then
-        page = math.max(page, math.floor(totalPages * jobDelta))
-    end
-
     if action.netAction then
         local progress = action.netAction:getProgress()
         if progress then
             local fromProgress = math.floor(totalPages * progress)
                 + (tonumber(action.startPage) or 0)
             page = math.max(page, fromProgress)
+        end
+    elseif action.action then
+        local jobDelta = action:getJobDelta()
+        if jobDelta then
+            page = math.max(page, math.floor(totalPages * jobDelta))
         end
     end
 

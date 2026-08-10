@@ -185,4 +185,31 @@ near(shorterCopy:getAlreadyReadPages(), 10, "reading must advance the active ite
 near(character:getAlreadyReadPages(sharedType), 0, "updates must clear shared progress")
 near(longerCopy:getAlreadyReadPages(), 80, "reading must not advance another copy")
 
+-- Dedicated-server read actions have netAction but no local action object.
+-- The inherited getJobDelta method is unsafe in that context because vanilla
+-- implements it as self.action:getJobDelta().
+local serverLiterature = newLiterature({
+    fullType = "Test.ServerLiterature",
+    pageCount = 100,
+    id = 4,
+    title = "Test_Server_Title",
+})
+local serverAction = {
+    item = serverLiterature,
+    character = character,
+    startPage = 0,
+    rbpLastMoodPercent = 0,
+    rbpMoodAlreadyRead = false,
+    netAction = { getProgress = function() return 0.5 end },
+    getJobDelta = function()
+        error("dedicated-server actions must not use local job delta")
+    end,
+}
+ISReadABook.animEvent(serverAction, "ReadAPage")
+near(
+    serverAction.rbpLastMoodPercent,
+    50,
+    "server milestones must use net-action progress"
+)
+
 print("Realistic Book Pages reading-effects tests passed")
