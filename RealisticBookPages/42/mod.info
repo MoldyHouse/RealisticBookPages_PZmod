@@ -1,7 +1,7 @@
 name=Realistic Book Pages
 id=RealisticBookPages
 description=Rebalances skill books and gives spawned books, magazines, recipe magazines, and newspapers realistic page and weight variation with server-wide controls.
-modversion=2.0.1
+modversion=2.0.2
 versionMin=42.15.0
 author=FellowRoach
 poster=icon.png
