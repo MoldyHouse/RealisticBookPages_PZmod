@@ -17,55 +17,47 @@ Defaults.mood = {
     stepPercent = 10,
 }
 
--- Ordinary subject books are weight-first: each spawned hardcover or
--- softcover rolls a weight, then receives a proportional page count.
 Defaults.ordinaryBooks = {
     enabled = true,
-    minimumWeight = 0.2,
-    maximumWeight = 2.5,
+    pages = ">80<550",
 }
 
 Defaults.magazines = {
     enabled = true,
-    minimumWeight = 0.1,
-    maximumWeight = 1.0,
+    pages = ">16<72",
 }
 
 Defaults.recipeMagazines = {
     enabled = true,
-    minimumWeight = 0.1,
-    maximumWeight = 1.0,
+    basePages = ">10<20",
+    pagesPerRecipe = 4,
 }
 
 Defaults.newspapers = {
     enabled = true,
-    minimumWeight = 0.1,
-    maximumWeight = 0.8,
+    pages = ">16<48",
 }
 
 Defaults.literatureKinds = {
     ordinaryBook = {
         enabledOption = "VaryOrdinaryBooks",
-        minimumOption = "OrdinaryBookMinimumWeight",
-        maximumOption = "OrdinaryBookMaximumWeight",
+        pagesOption = "OrdinaryBookPages",
         defaults = Defaults.ordinaryBooks,
     },
     magazine = {
         enabledOption = "VaryMagazines",
-        minimumOption = "MagazineMinimumWeight",
-        maximumOption = "MagazineMaximumWeight",
+        pagesOption = "MagazinePages",
         defaults = Defaults.magazines,
     },
     recipeMagazine = {
         enabledOption = "VaryRecipeMagazines",
-        minimumOption = "RecipeMagazineMinimumWeight",
-        maximumOption = "RecipeMagazineMaximumWeight",
+        basePagesOption = "RecipeMagazineBasePages",
+        pagesPerRecipeOption = "RecipeMagazinePagesPerRecipe",
         defaults = Defaults.recipeMagazines,
     },
     newspaper = {
         enabledOption = "VaryNewspapers",
-        minimumOption = "NewspaperMinimumWeight",
-        maximumOption = "NewspaperMaximumWeight",
+        pagesOption = "NewspaperPages",
         defaults = Defaults.newspapers,
     },
 }

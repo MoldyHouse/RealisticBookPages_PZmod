@@ -75,17 +75,14 @@ SandboxVars = {
         FallbackPages = "55/65/75/85/95",
         AdjustWeight = false,
         VaryOrdinaryBooks = true,
-        OrdinaryBookMinimumWeight = 0.2,
-        OrdinaryBookMaximumWeight = 2.5,
+        OrdinaryBookPages = ">80<550",
         VaryMagazines = true,
-        MagazineMinimumWeight = 0.1,
-        MagazineMaximumWeight = 1.0,
+        MagazinePages = ">16<72",
         VaryRecipeMagazines = true,
-        RecipeMagazineMinimumWeight = 0.1,
-        RecipeMagazineMaximumWeight = 1.0,
+        RecipeMagazineBasePages = ">10<20",
+        RecipeMagazinePagesPerRecipe = 4,
         VaryNewspapers = true,
-        NewspaperMinimumWeight = 0.1,
-        NewspaperMaximumWeight = 0.8,
+        NewspaperPages = ">16<48",
     },
 }
 
@@ -201,7 +198,7 @@ local recipeMagazineScript = newLiteratureScript(
     "Base.HerbalistMag",
     ItemTag.MAGAZINE,
     0.5,
-    { "Herbalist" }
+    { "Herbalist", "Baking" }
 )
 local newspaperScript = newLiteratureScript(
     "Base.Newspaper_Times_New",
@@ -346,19 +343,18 @@ function ordinarySpawn:setActualWeight(value) self.weight = value end
 function ordinarySpawn:setCustomWeight(value) self.customWeight = value end
 addMoodMethods(ordinarySpawn)
 
-SandboxVars.RealisticBookPages.OrdinaryBookMinimumWeight = 0.2
-SandboxVars.RealisticBookPages.OrdinaryBookMaximumWeight = 0.2
+SandboxVars.RealisticBookPages.OrdinaryBookPages = 44
 SandboxVars.RealisticBookPages.MinimumPages = 16
 API.onBookCreated(ordinarySpawn)
-equal(ordinarySpawn.pages, 44, "ordinary pages must follow its spawned weight")
-equal(ordinarySpawn.weight, 0.2)
+equal(ordinarySpawn.pages, 44, "ordinary books must roll pages directly")
+equal(ordinarySpawn.weight, 0.4)
 equal(ordinarySpawn.customWeight, true)
-equal(ordinarySpawn.boredom, -10)
-near(ordinarySpawn.stress, -0.08)
-equal(ordinarySpawn.unhappiness, -8)
+equal(ordinarySpawn.boredom, -20)
+near(ordinarySpawn.stress, -0.16)
+equal(ordinarySpawn.unhappiness, -16)
 equal(TestCallbacks.calls, 4, "ordinary title OnCreate callback must be chained")
 
-local rangeOk = API.setOrdinaryBookWeightRange(0.3, 0.3)
+local rangeOk = API.setLiteraturePageSpec("ordinaryBook", 66)
 equal(rangeOk, true)
 local overriddenOrdinarySpawn = {
     pages = -1,
@@ -375,7 +371,7 @@ function overriddenOrdinarySpawn:setCustomWeight(value) self.customWeight = valu
 addMoodMethods(overriddenOrdinarySpawn)
 API.onBookCreated(overriddenOrdinarySpawn)
 equal(overriddenOrdinarySpawn.pages, 66)
-equal(overriddenOrdinarySpawn.weight, 0.3)
+equal(overriddenOrdinarySpawn.weight, 0.48)
 
 local function newLiteratureSpawn(script)
     local spawned = {
@@ -394,12 +390,11 @@ local function newLiteratureSpawn(script)
     return spawned
 end
 
-SandboxVars.RealisticBookPages.MagazineMinimumWeight = 0.1
-SandboxVars.RealisticBookPages.MagazineMaximumWeight = 0.1
-SandboxVars.RealisticBookPages.RecipeMagazineMinimumWeight = 0.2
-SandboxVars.RealisticBookPages.RecipeMagazineMaximumWeight = 0.2
-SandboxVars.RealisticBookPages.NewspaperMinimumWeight = 0.3
-SandboxVars.RealisticBookPages.NewspaperMaximumWeight = 0.3
+SandboxVars.RealisticBookPages.MinimumPages = 1
+SandboxVars.RealisticBookPages.MagazinePages = 22
+SandboxVars.RealisticBookPages.RecipeMagazineBasePages = 10
+SandboxVars.RealisticBookPages.RecipeMagazinePagesPerRecipe = 4
+SandboxVars.RealisticBookPages.NewspaperPages = 66
 
 local magazineSpawn = newLiteratureSpawn(magazineScript)
 local recipeMagazineSpawn = newLiteratureSpawn(recipeMagazineScript)
@@ -408,21 +403,21 @@ API.onBookCreated(magazineSpawn)
 API.onBookCreated(recipeMagazineSpawn)
 API.onBookCreated(newspaperSpawn)
 equal(magazineSpawn.pages, 22)
-equal(magazineSpawn.weight, 0.1)
-equal(recipeMagazineSpawn.pages, 44)
-equal(recipeMagazineSpawn.weight, 0.2)
+equal(magazineSpawn.weight, 0.33)
+equal(recipeMagazineSpawn.pages, 18)
+equal(recipeMagazineSpawn.weight, 0.31)
 equal(newspaperSpawn.pages, 66)
-equal(newspaperSpawn.weight, 0.3)
+equal(newspaperSpawn.weight, 0.48)
 equal(magazineSpawn.customWeight, true)
 equal(recipeMagazineSpawn.customWeight, true)
 equal(newspaperSpawn.customWeight, true)
 equal(TestCallbacks.calls, 8, "all literature OnCreate callbacks must be chained")
 
-local magazineRangeOk = API.setLiteratureWeightRange("magazine", 0.4, 0.4)
+local magazineRangeOk = API.setLiteraturePageSpec("magazine", 88)
 equal(magazineRangeOk, true)
 local overriddenMagazineSpawn = newLiteratureSpawn(magazineScript)
 API.onBookCreated(overriddenMagazineSpawn)
 equal(overriddenMagazineSpawn.pages, 88)
-equal(overriddenMagazineSpawn.weight, 0.4)
+equal(overriddenMagazineSpawn.weight, 0.55)
 
 print("Realistic Book Pages tests passed: " .. passed)

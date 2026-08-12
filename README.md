@@ -17,7 +17,8 @@ The result is a progression in which surviving, reading, and learning fit togeth
 - Fixed page values and per-spawn page ranges.
 - Automatic support for expansion mods that create skill books through the standard game API.
 - A fallback balance for correctly implemented books that train non-canonical skills.
-- Weight-first page variation for ordinary books, magazines, recipe magazines, and newspapers.
+- Page-first variation for ordinary books, magazines, recipe magazines, and newspapers, with weight derived from the resulting length.
+- Recipe-magazine length based on a configurable base plus pages per taught recipe.
 - Uncapped weight-scaled boredom, stress, and unhappiness effects, applied as pages are read.
 
 ## Sandbox and multiplayer configuration
@@ -41,7 +42,17 @@ Each tier accepts either a fixed page count or a range:
 
 Range results are rolled when each book instance spawns. In multiplayer, only the server rolls the value; clients retain the synchronized value assigned to that instance. Two copies of the same skill book can therefore have different lengths without creating client/server disagreement. All fixed and ranged results are clamped to the global **Minimum Pages** and **Maximum Pages** options.
 
-The General section also controls the fallback curve for non-canonical skills and the dynamic-weight formula. Sandbox settings are world-wide and apply to all players. Changes made through a live admin Sandbox interface affect books spawned after the updated values reach the server; books that already exist are not rerolled.
+Other literature uses the same fixed-or-range syntax:
+
+- **Ordinary Book Pages** controls hardcovers and paperbacks.
+- **Miscellaneous Magazine Pages** controls qualifying non-recipe magazines.
+- **Newspaper Pages** controls tagged newspapers.
+- **Recipe Magazine Base Pages** supplies general and introductory content.
+- **Pages per Taught Recipe** is multiplied by the number of recipes in that magazine and added to its base pages.
+
+For example, a recipe magazine with a 10-page base, 4 pages per recipe, and two taught recipes receives `10 + (4 × 2) = 18 pages`. Base pages and pages per recipe may each be fixed or ranged. The completed total is clamped to the global page limits, then its weight is calculated from that total.
+
+The Base Configuration page also controls the global limits and dynamic-weight formula, while the Skill Books page contains the fallback curve for non-canonical skills. Sandbox settings are world-wide and apply to all players. Changes made through a live admin Sandbox interface affect books spawned after the updated values reach the server; books that already exist are not rerolled.
 
 Dedicated servers can edit the generated `RealisticBookPages` section in their `<servername>_SandboxVars.lua` file or use the host Sandbox UI. Editing this file on disk still requires the server to reload it. Existing books already serialized into a save retain their assigned page count and weight; newly generated books use the current configuration.
 
@@ -150,7 +161,9 @@ A 220-page book remains the reference weight of 1.0. A fixed portion represents 
 
 ### Other literature and mood effects
 
-Ordinary books, miscellaneous magazines weighing 0.5 by default, recipe magazines, and newspapers receive a spawned weight and proportional page count. Their original weight remains the baseline for mood effects: a hardcover reduced from 1.0 to 0.5 weight provides half its original benefit, while a paperback whose original weight is already 0.5 retains its full benefit. The multiplier is uncapped, so larger variants provide proportionally larger total effects.
+Ordinary books, miscellaneous magazines weighing 0.5 by default, recipe magazines, and newspapers now roll their page count first. Their weight is then derived from the final length using the same reference-page formula. Recipe magazines additionally scale with the number of recipes they teach, avoiding large magazines with very little instructional content.
+
+The original item weight remains the baseline for mood effects: a hardcover reduced from 1.0 to 0.5 weight provides half its original benefit, while a paperback whose original weight is already 0.5 retains its full benefit. The multiplier is uncapped, so larger variants provide proportionally larger total effects.
 
 Boredom, stress, and unhappiness changes are granted for newly read pages instead of all at completion. Interrupted books resume from their saved page without rewarding the same pages again. Both weight scaling and gradual effects can be disabled under **Other Literature**.
 
@@ -168,6 +181,8 @@ Books for properly implemented non-canonical skills receive the fallback progres
 
 Mods that use nonstandard tier structures or do not expose their skill books through the expected game properties cannot be balanced reliably and are left outside the automatic compatibility scope.
 
+Correctly tagged expansion-mod hardcovers, paperbacks, magazines, recipe magazines, and newspapers are also supported. Recipe magazines use the size of their standard `LearnedRecipes` collection; dynamically generated literature with one `learnedRecipe` entry is counted as teaching one recipe. Literature that does not expose its content through the standard item API may require explicit registration.
+
 ### Pre-initialization API
 
 Expansion mods can register a five-tier curve before world initialization:
@@ -181,6 +196,27 @@ RealisticBookPages.registerSkill(
 ```
 
 Server-side code can override a complete curve with `setPageCurve`, one tier with `setPageSpec`, or the non-canonical fallback with `setFallbackCurve`. Lua callers may pass real numbers or range strings. Call `RealisticBookPages.apply()` if an override is registered after initialization; registering before `OnInitWorld` is preferred.
+
+Other literature can be registered and configured before initialization:
+
+```lua
+RealisticBookPages.registerLiterature(
+    "MyMod.RecipeMagazine",
+    "recipeMagazine"
+)
+
+RealisticBookPages.setLiteraturePageSpec(
+    "magazine",
+    ">16<72"
+)
+
+RealisticBookPages.setRecipeMagazinePageSpecs(
+    ">10<20",
+    4
+)
+```
+
+Supported literature kinds are `ordinaryBook`, `magazine`, `recipeMagazine`, and `newspaper`. `setLiteraturePageSpec` accepts a fixed number or range string. Recipe magazines use `setRecipeMagazinePageSpecs(basePages, pagesPerRecipe)` so both parts can be configured independently.
 
 ## What the mod changes
 

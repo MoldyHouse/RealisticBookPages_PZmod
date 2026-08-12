@@ -21,7 +21,7 @@ API.skillAliases = API.skillAliases or {}
 API.pageOverrides = API.pageOverrides or {}
 API.ordinaryBookTypes = API.ordinaryBookTypes or {}
 API.literatureTypes = API.literatureTypes or {}
-API.literatureWeightOverrides = API.literatureWeightOverrides or {}
+API.literaturePageOverrides = API.literaturePageOverrides or {}
 
 for skill, pages in pairs(Defaults.pagesBySkill) do
     if API.pagesBySkill[skill] == nil then
@@ -134,39 +134,30 @@ function API.registerOrdinaryBook(fullType)
     return ok, message
 end
 
-function API.setLiteratureWeightRange(kind, minimum, maximum)
+function API.setLiteraturePageSpec(kind, spec)
     if not LITERATURE_KINDS[kind] then
         return false, "unsupported literature kind " .. tostring(kind)
     end
-
-    minimum = tonumber(minimum)
-    maximum = tonumber(maximum)
-    if not minimum or not maximum or minimum <= 0 or maximum <= 0 then
-        return false, "literature weights must be positive numbers"
+    if type(spec) ~= "number" and type(spec) ~= "string" then
+        return false, "page value must be a number or range string"
     end
 
-    if minimum > maximum then
-        minimum, maximum = maximum, minimum
-    end
-
-    API.literatureWeightOverrides[kind] = {
-        minimum = minimum,
-        maximum = maximum,
-    }
+    API.literaturePageOverrides[kind] = spec
     return true
 end
 
-function API.setOrdinaryBookWeightRange(minimum, maximum)
-    local ok, message = API.setLiteratureWeightRange(
-        "ordinaryBook",
-        minimum,
-        maximum
-    )
-    if ok then
-        API.ordinaryBookWeightOverride =
-            API.literatureWeightOverrides.ordinaryBook
+function API.setRecipeMagazinePageSpecs(basePages, pagesPerRecipe)
+    if (type(basePages) ~= "number" and type(basePages) ~= "string")
+        or (type(pagesPerRecipe) ~= "number"
+            and type(pagesPerRecipe) ~= "string") then
+        return false, "recipe page values must be numbers or range strings"
     end
-    return ok, message
+
+    API.literaturePageOverrides.recipeMagazine = {
+        basePages = basePages,
+        pagesPerRecipe = pagesPerRecipe,
+    }
+    return true
 end
 
 local function getBookWeight(pageCount, weightConfig)
@@ -301,6 +292,23 @@ local function hasLearnedRecipes(item)
         return recipes:size()
     end)
     return sizeOk and size > 0 or false
+end
+
+local function learnedRecipeCount(item)
+    local ok, recipes = pcall(function()
+        return item:getLearnedRecipes()
+    end)
+    if not ok or not recipes then
+        return 0
+    end
+    if type(recipes) == "table" then
+        return #recipes
+    end
+
+    local sizeOk, size = pcall(function()
+        return recipes:size()
+    end)
+    return sizeOk and size or 0
 end
 
 local function isWritable(item)
@@ -460,7 +468,22 @@ function API.onBookCreated(item)
             return
         end
 
-        local literature = Config.resolveLiteratureSpawn(API, kind)
+        local recipeCount = 0
+        if kind == "recipeMagazine" then
+            recipeCount = learnedRecipeCount(item)
+            if recipeCount == 0 then
+                recipeCount = learnedRecipeCount(scriptItem)
+            end
+            local data = item:getModData()
+            if recipeCount == 0 and data.learnedRecipe ~= nil then
+                recipeCount = 1
+            end
+        end
+        local literature = Config.resolveLiteratureSpawn(
+            API,
+            kind,
+            recipeCount
+        )
         if not literature.enabled then
             if baseline then
                 item:setNumberOfPages(baseline.pages)
@@ -469,9 +492,10 @@ function API.onBookCreated(item)
             return
         end
 
+        local weight = getBookWeight(literature.pageCount, literature.weight)
         item:setNumberOfPages(literature.pageCount)
-        setInstanceWeight(item, literature.weight, true)
-        setLiteratureMoodEffects(item, baseline, literature.weight)
+        setInstanceWeight(item, weight, true)
+        setLiteratureMoodEffects(item, baseline, weight)
         return
     end
 

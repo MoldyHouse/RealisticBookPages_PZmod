@@ -44,17 +44,14 @@ local literatureOptions = {
     ScaleMoodEffectsByWeight = true,
     ApplyMoodEffectsWhileReading = true,
     MoodEffectStepPercent = true,
-    OrdinaryBookMinimumWeight = true,
-    OrdinaryBookMaximumWeight = true,
+    OrdinaryBookPages = true,
     VaryMagazines = true,
-    MagazineMinimumWeight = true,
-    MagazineMaximumWeight = true,
+    MagazinePages = true,
     VaryRecipeMagazines = true,
-    RecipeMagazineMinimumWeight = true,
-    RecipeMagazineMaximumWeight = true,
+    RecipeMagazineBasePages = true,
+    RecipeMagazinePagesPerRecipe = true,
     VaryNewspapers = true,
-    NewspaperMinimumWeight = true,
-    NewspaperMaximumWeight = true,
+    NewspaperPages = true,
 }
 
 for name, option in pairs(options) do

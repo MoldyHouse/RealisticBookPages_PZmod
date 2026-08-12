@@ -108,24 +108,12 @@ option RealisticBookPages.MoodEffectStepPercent
     translation = RBP_MoodEffectStepPercent,
 }
 
-option RealisticBookPages.OrdinaryBookMinimumWeight
+option RealisticBookPages.OrdinaryBookPages
 {
-    type = double,
-    min = 0.01,
-    max = 10.0,
-    default = 0.2,
+    type = string,
+    default = >80<550,
     page = RealisticBookPages_Literature,
-    translation = RBP_OrdinaryBookMinimumWeight,
-}
-
-option RealisticBookPages.OrdinaryBookMaximumWeight
-{
-    type = double,
-    min = 0.01,
-    max = 10.0,
-    default = 2.5,
-    page = RealisticBookPages_Literature,
-    translation = RBP_OrdinaryBookMaximumWeight,
+    translation = RBP_OrdinaryBookPages,
 }
 
 option RealisticBookPages.VaryMagazines
@@ -136,24 +124,12 @@ option RealisticBookPages.VaryMagazines
     translation = RBP_VaryMagazines,
 }
 
-option RealisticBookPages.MagazineMinimumWeight
+option RealisticBookPages.MagazinePages
 {
-    type = double,
-    min = 0.01,
-    max = 10.0,
-    default = 0.1,
+    type = string,
+    default = >16<48,
     page = RealisticBookPages_Literature,
-    translation = RBP_MagazineMinimumWeight,
-}
-
-option RealisticBookPages.MagazineMaximumWeight
-{
-    type = double,
-    min = 0.01,
-    max = 10.0,
-    default = 1.0,
-    page = RealisticBookPages_Literature,
-    translation = RBP_MagazineMaximumWeight,
+    translation = RBP_MagazinePages,
 }
 
 option RealisticBookPages.VaryRecipeMagazines
@@ -164,24 +140,20 @@ option RealisticBookPages.VaryRecipeMagazines
     translation = RBP_VaryRecipeMagazines,
 }
 
-option RealisticBookPages.RecipeMagazineMinimumWeight
+option RealisticBookPages.RecipeMagazineBasePages
 {
-    type = double,
-    min = 0.01,
-    max = 10.0,
-    default = 0.1,
+    type = string,
+    default = >10<20,
     page = RealisticBookPages_Literature,
-    translation = RBP_RecipeMagazineMinimumWeight,
+    translation = RBP_RecipeMagazineBasePages,
 }
 
-option RealisticBookPages.RecipeMagazineMaximumWeight
+option RealisticBookPages.RecipeMagazinePagesPerRecipe
 {
-    type = double,
-    min = 0.01,
-    max = 10.0,
-    default = 1.0,
+    type = string,
+    default = 4,
     page = RealisticBookPages_Literature,
-    translation = RBP_RecipeMagazineMaximumWeight,
+    translation = RBP_RecipeMagazinePagesPerRecipe,
 }
 
 option RealisticBookPages.VaryNewspapers
@@ -192,24 +164,12 @@ option RealisticBookPages.VaryNewspapers
     translation = RBP_VaryNewspapers,
 }
 
-option RealisticBookPages.NewspaperMinimumWeight
+option RealisticBookPages.NewspaperPages
 {
-    type = double,
-    min = 0.01,
-    max = 10.0,
-    default = 0.1,
+    type = string,
+    default = >16<26,
     page = RealisticBookPages_Literature,
-    translation = RBP_NewspaperMinimumWeight,
-}
-
-option RealisticBookPages.NewspaperMaximumWeight
-{
-    type = double,
-    min = 0.01,
-    max = 10.0,
-    default = 0.8,
-    page = RealisticBookPages_Literature,
-    translation = RBP_NewspaperMaximumWeight,
+    translation = RBP_NewspaperPages,
 }
 
 option RealisticBookPages.CarvingPages

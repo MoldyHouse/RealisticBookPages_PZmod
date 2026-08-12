@@ -94,16 +94,6 @@ local function randomInteger(_, minimum, maximum)
     return math.random(minimum, maximum)
 end
 
-local function randomWeight(minimum, maximum)
-    local minimumHundredths = round(minimum * 100)
-    local maximumHundredths = round(maximum * 100)
-    return randomInteger(
-        "ordinary-book-weight",
-        minimumHundredths,
-        maximumHundredths
-    ) / 100
-end
-
 local function resolvePageSpecUsing(
     spec,
     fallback,
@@ -464,9 +454,9 @@ function Config.resolveSpawn(api, skill, tier)
     return runtime
 end
 
--- Non-skill literature does not define NumberOfPages in vanilla. Roll its
--- weight first and translate it into pages using the shared reference ratio.
-function Config.resolveLiteratureSpawn(api, kind)
+-- Non-skill literature rolls pages directly. Recipe magazines add a base
+-- amount to a per-recipe amount before the final result is globally clamped.
+function Config.resolveLiteratureSpawn(api, kind, recipeCount)
     local definition = Defaults.literatureKinds[kind]
     if not definition then
         return { enabled = false }
@@ -488,54 +478,68 @@ function Config.resolveLiteratureSpawn(api, kind)
         minimumPages, maximumPages = maximumPages, minimumPages
     end
 
-    local minimumWeight = math.max(0.01, numberOption(
-        options,
-        definition.minimumOption,
-        definition.defaults.minimumWeight
-    ))
-    local maximumWeight = math.max(0.01, numberOption(
-        options,
-        definition.maximumOption,
-        definition.defaults.maximumWeight
-    ))
+    local override = api.literaturePageOverrides
+        and api.literaturePageOverrides[kind]
+    local pages
 
-    local override = api.literatureWeightOverrides
-        and api.literatureWeightOverrides[kind]
-    if kind == "ordinaryBook" and api.ordinaryBookWeightOverride then
-        override = api.ordinaryBookWeightOverride
-    end
+    if kind == "recipeMagazine" then
+        local baseSpec = options[definition.basePagesOption]
+            or definition.defaults.basePages
+        local perRecipeSpec = options[definition.pagesPerRecipeOption]
+            or definition.defaults.pagesPerRecipe
+        if type(override) == "table" then
+            baseSpec = override.basePages or baseSpec
+            perRecipeSpec = override.pagesPerRecipe or perRecipeSpec
+        elseif override ~= nil then
+            baseSpec = override
+        end
 
-    if override then
-        minimumWeight = math.max(
-            0.01,
-            tonumber(override.minimum) or minimumWeight
+        local defaultBasePages = Config.resolvePageSpec(
+            definition.defaults.basePages,
+            minimumPages,
+            0,
+            maximumPages,
+            kind .. ":default-base"
         )
-        maximumWeight = math.max(
-            0.01,
-            tonumber(override.maximum) or maximumWeight
+        local basePages = Config.resolveRandomPageSpec(
+            baseSpec,
+            defaultBasePages,
+            0,
+            maximumPages,
+            kind .. ":base"
+        )
+        local pagesPerRecipe = Config.resolveRandomPageSpec(
+            perRecipeSpec,
+            definition.defaults.pagesPerRecipe,
+            0,
+            maximumPages,
+            kind .. ":per-recipe"
+        )
+        pages = basePages + pagesPerRecipe * math.max(
+            0,
+            math.floor(tonumber(recipeCount) or 0)
+        )
+    else
+        local spec = override
+            or options[definition.pagesOption]
+            or definition.defaults.pages
+        local defaultPages = Config.resolvePageSpec(
+            definition.defaults.pages,
+            minimumPages,
+            minimumPages,
+            maximumPages,
+            kind .. ":default"
+        )
+        pages = Config.resolveRandomPageSpec(
+            spec,
+            defaultPages,
+            minimumPages,
+            maximumPages,
+            kind .. ":spawn"
         )
     end
 
-    if minimumWeight > maximumWeight then
-        minimumWeight, maximumWeight = maximumWeight, minimumWeight
-    end
-
-    local referencePages = math.max(1, round(numberOption(
-        options,
-        "ReferencePages",
-        Defaults.weight.referencePages
-    )))
-    local referenceWeight = math.max(0.01, numberOption(
-        options,
-        "ReferenceWeight",
-        Defaults.weight.referenceWeight
-    ))
-    local weight = randomWeight(minimumWeight, maximumWeight)
-    local pages = clamp(
-        round(referencePages * weight / referenceWeight),
-        minimumPages,
-        maximumPages
-    )
+    pages = clamp(round(pages), minimumPages, maximumPages)
 
     return {
         enabled = booleanOption(options, "Enabled", true)
@@ -543,11 +547,25 @@ function Config.resolveLiteratureSpawn(api, kind)
                 options,
                 definition.enabledOption,
                 definition.defaults.enabled
-            ),
+        ),
         pageCount = pages,
-        weight = weight,
-        minimumWeight = minimumWeight,
-        maximumWeight = maximumWeight,
+        weight = {
+            referencePages = math.max(1, round(numberOption(
+                options,
+                "ReferencePages",
+                Defaults.weight.referencePages
+            ))),
+            referenceWeight = math.max(0.01, numberOption(
+                options,
+                "ReferenceWeight",
+                Defaults.weight.referenceWeight
+            )),
+            bindingWeight = math.max(0, numberOption(
+                options,
+                "BindingWeight",
+                Defaults.weight.bindingWeight
+            )),
+        },
     }
 end
 
