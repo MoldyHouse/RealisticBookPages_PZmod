@@ -88,7 +88,7 @@ Each book covers two skill levels: Beginner covers levels 1â€“2, Intermediate 3â
 | Long Blade | 96 | 136 | 192 | 304 | 416 | **1,144** |
 | Comparison | - | - | - | - | - | - |
 | Default Game Values | 220 | 260 | 300 | 340 | 380 | **35040** |
-| Default Game Values | >56<120 | >80<240 | >128<352 | >176<504 | >256<672 | **32502** |
+| Realistic Book Values | >56<120 | >80<240 | >128<352 | >176<504 | >256<672 | **32502** |
 
 ### Extended for Skill Book Mods
 | Skill | Beginner | Intermediate | Advanced | Expert | Master | Total |
