@@ -1,4 +1,4 @@
-# Realistic Book Pages [B42]
+# Realistic Book Pages [B42](https://steamcommunity.com/sharedfiles/filedetails/?id=3777767140)
 
 Skill books should feel like real books, not five copies of the same book with increasingly large page counts.
 
